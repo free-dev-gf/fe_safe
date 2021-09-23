@@ -1,0 +1,32 @@
+<html>
+  <head></head>
+  <body>
+    我是页面1
+    <!-- 禁用iframe中的js逻辑，使其不能让当前页面跳转到google -->
+    <iframe sandbox="" src="http://127.0.0.1:8080/index2.html"></iframe>
+    <!-- 测试时，这种场景打开index2，当前页面不会跳到google -->
+    <a href="http://127.0.0.1:8080/index2.html" target="_blank">打开index2</a>
+    <!-- 测试时，这种场景会跳到google -->
+    <button onclick="openPage()">打开index2</button>
+    <button onclick="setData()">xsrf修改跨域的已登录站点的数据</button>
+    <script>
+      function openPage() {
+        window.open('http://127.0.0.1:8080/index2.html');
+      }
+      function setData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', 'http://127.0.0.1:8081/update', true);
+        xhr.onreadystatechange = function(e) {
+          var res = e.currentTarget;
+          if (res.readyState === XMLHttpRequest.DONE && res.status === 200) {
+            console.log(res.responseText);
+          }
+        }
+        xhr.withCredentials = true;
+        // referer只能由浏览器来设置，下面设置不会生效，可以作为识别xsrf攻击的手段
+        xhr.setRequestHeader('referer', 'http://127.0.0.1:8083/');
+        xhr.send(987);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,16 @@
+<html>
+  <head></head>
+  <body>
+    我是页面2
+    <script>
+      // console.log('top.location', top.location);
+      // console.log('self.location', self.location);
+      // if (top.location.pathname !== self.location.pathname) {
+      //   top.location.href = "https://www.bing.com";
+      // }
+
+      // index.html会被跳转到google
+      window.opener.location.replace('https://www.google.com');
+    </script>
+  </body>
+</html>

